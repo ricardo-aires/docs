@@ -399,8 +399,12 @@ Events:
   ----       ------                 ----  ----                         -------
   Normal     ProvisioningSucceeded  99s   persistentvolume-controller  Successfully provisioned volume pvc-4c31238a-4750-11ea-b421-42010a84004a using kubernetes.io/gce-pd
 Mounted By:  <none>
-$ kubectl get pv | grep 'default/test'
-pvc-4c31238a-4750-11ea-b421-42010a84004a   5Gi        RWO            Delete           Bound         default/test                                                          faster                  4m43s
+$
+```
+
+We can then get more info on the PV:
+
+```code
 $ kubectl describe pv pvc-4c31238a-4750-11ea-b421-42010a84004a
 Name:              pvc-4c31238a-4750-11ea-b421-42010a84004a
 Labels:            failure-domain.beta.kubernetes.io/region=europe-west1
@@ -457,6 +461,14 @@ persistentvolumeclaim/test configured
 $
 ```
 
+If we really want to edit in an imperative way we can do it by running:
+
+```code
+$ kubectl patch pvc test -p '{ "spec": { "resources": { "requests": { "storage": "20Gi" }}}}'
+persistentvolumeclaim/test patched
+$
+```
+
 If `ExpandInUsePersistentVolumes` feature is not set, when you check the status we will find that it is still pending:
 
 ```code
@@ -485,14 +497,6 @@ Events:
   ----       ------                 ----  ----                         -------
   Normal     ProvisioningSucceeded  10m   persistentvolume-controller  Successfully provisioned volume pvc-4c31238a-4750-11ea-b421-42010a84004a using kubernetes.io/gce-pd
 Mounted By:  <none>
-$
-```
-
-If we really want to edit in an imperative way we can do it by running:
-
-```code
-$ kubectl patch pvc test -p '{ "spec": { "resources": { "requests": { "storage": "20Gi" }}}}'
-persistentvolumeclaim/test patched
 $
 ```
 
